@@ -64,6 +64,7 @@ usage() {
 	echo 'Flags:'
 	echo '-h         This help'
 	echo '-c         Clean the chroot before building'
+	echo '-C <dir>   Set pacman cache to pass to arch-nspawn'
 	echo '-d <dir>   Bind directory into build chroot as read-write'
 	echo '-D <dir>   Bind directory into build chroot as read-only'
 	echo '-u         Update the working copy of the chroot before building'
@@ -273,12 +274,13 @@ move_products() {
 }
 # }}}
 
-while getopts 'hcur:I:l:nCTD:d:U:' arg; do
+while getopts 'hcuC:r:I:l:nCTD:d:U:' arg; do
 	case "$arg" in
 		c) clean_first=1 ;;
 		D) bindmounts_ro+=("--bind-ro=$OPTARG") ;;
 		d) bindmounts_rw+=("--bind=$OPTARG") ;;
 		u) update_first=1 ;;
+		C) cache_dir="-c $OPTARG" ;;
 		r) passeddir="$OPTARG" ;;
 		I) install_pkgs+=("$OPTARG") ;;
 		l) copy="$OPTARG" ;;
@@ -360,7 +362,7 @@ download_sources
 
 prepare_chroot
 
-if arch-nspawn "$copydir" \
+if arch-nspawn $cache_dir "$copydir" \
 	--bind="${PWD//:/\\:}:/startdir" \
 	--bind="${SRCDEST//:/\\:}:/srcdest" \
 	"${bindmounts_ro[@]}" "${bindmounts_rw[@]}" \

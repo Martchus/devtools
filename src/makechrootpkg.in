@@ -68,6 +68,7 @@ usage() {
 	echo 'Flags:'
 	echo '-h                This help'
 	echo '-c                Clean the chroot before building'
+	echo '-Y <dir>          Set pacman cache to pass to arch-nspawn'
 	echo '-d <dir>          Bind directory into build chroot as read-write'
 	echo '-D <dir>          Bind directory into build chroot as read-only'
 	echo '-t <dir[:opts]>   Mount a tmpfs at directory'
@@ -293,13 +294,14 @@ move_products() {
 }
 # }}}
 
-while getopts 'hcur:I:l:nCTD:d:U:x:t:' arg; do
+while getopts 'hcuY:r:I:l:nCTD:d:U:x:t:' arg; do
 	case "$arg" in
 		c) clean_first=1 ;;
 		D) bindmounts_ro+=("--bind-ro=$OPTARG") ;;
 		d) bindmounts_rw+=("--bind=$OPTARG") ;;
 		t) bindmounts_tmpfs+=("--tmpfs=$OPTARG") ;;
 		u) update_first=1 ;;
+		Y) cache_dir="-c $OPTARG" ;;
 		r) passeddir="$OPTARG" ;;
 		I) install_pkgs+=("$OPTARG") ;;
 		l) copy="$OPTARG" ;;
@@ -396,7 +398,7 @@ nspawn_build_args=(
 	"${bindmounts_tmpfs[@]}"
 )
 
-if arch-nspawn "$copydir" \
+if arch-nspawn $cache_dir "$copydir" \
 	"${nspawn_build_args[@]}" \
 	/chrootbuild "${makepkg_args[@]}"
 then

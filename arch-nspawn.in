@@ -130,6 +130,9 @@ eval "$(grep -a '^CARCH=' "$working_dir/etc/makepkg.conf")"
 exec systemd-nspawn -q \
 	-D "$working_dir" \
 	-E "PATH=/usr/local/sbin:/usr/local/bin:/usr/bin" \
-	--register=no --keep-unit --as-pid2 \
+	--register=no \
+	--as-pid2 \
+	--rlimit=NOFILE=10000 \
+	--resolv-conf=copy-host \
 	"${mount_args[@]}" \
 	"$@"

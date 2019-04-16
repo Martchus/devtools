@@ -65,6 +65,8 @@ nspawn_args=(
 	--machine="arch-nspawn-$$"
 	--as-pid2
 	--console=autopipe
+	--rlimit=NOFILE=10000
+	--resolv-conf=copy-host
 )
 
 if (( ${#cache_dirs[@]} == 0 )); then

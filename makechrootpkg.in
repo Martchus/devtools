@@ -367,6 +367,7 @@ download_sources
 prepare_chroot
 
 if arch-nspawn $cache_dir "$copydir" \
+	--setenv=TERM=xterm \
 	--bind="${PWD//:/\\:}:/startdir" \
 	--bind="${SRCDEST//:/\\:}:/srcdest" \
 	"${bindmounts_ro[@]}" "${bindmounts_rw[@]}" \

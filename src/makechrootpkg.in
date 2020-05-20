@@ -390,6 +390,7 @@ download_sources
 prepare_chroot
 
 nspawn_build_args=(
+	--setenv=TERM=xterm
 	--bind="${PWD//:/\\:}:/startdir"
 	--bind="${SRCDEST//:/\\:}:/srcdest"
 	--tmpfs="/tmp:${tmp_opts}"

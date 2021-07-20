@@ -148,4 +148,7 @@ else
 	set_arch="${CARCH}"
 fi
 
-exec systemd-nspawn "${nspawn_args[@]}" "$@"
+for p in  echo exec; do
+[[ $p == echo ]] && msg "Entering chroot \"$working_dir\" via:"
+"$p" systemd-nspawn "${nspawn_args[@]}" "$@"
+done

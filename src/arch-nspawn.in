@@ -122,7 +122,9 @@ else
 	set_arch="${CARCH}"
 fi
 
-exec systemd-nspawn -q \
+for p in  echo exec; do
+[[ $p == echo ]] && msg "Entering chroot \"$working_dir\" via:"
+"$p" systemd-nspawn -q \
 	-D "$working_dir" \
 	-E "PATH=/usr/local/sbin:/usr/local/bin:/usr/bin" \
 	--register=no \
@@ -131,3 +133,4 @@ exec systemd-nspawn -q \
 	--resolv-conf=copy-host \
 	"${mount_args[@]}" \
 	"$@"
+done
